@@ -24,7 +24,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  StreamSocket streamSocket = StreamSocket();
+  StreamController<String> streamController = StreamController<String>();
 
   IO.Socket socket = IO.io(
       '$url/application',
@@ -35,9 +35,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _connect() {
     socket.onConnect((data) => debugPrint('연결 성공'));
-    socket.on('update', (data) {
+    socket.on('test', (data) {
       debugPrint('받은 값 : $data');
-      return streamSocket.addResponse;
+      return streamController.add(data);
     });
     socket.onDisconnect((data) => debugPrint('끊김'));
     socket.connect();
@@ -53,8 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-        stream: streamSocket.getResponse,
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        stream: streamController.stream,
+        builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Center(child: Text(snapshot.data.toString()));
           } else if (snapshot.hasError) {
@@ -69,17 +69,5 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
     );
-  }
-}
-
-class StreamSocket {
-  final _socketResponse = StreamController<String>();
-
-  void Function(String) get addResponse => _socketResponse.sink.add;
-
-  Stream<String> get getResponse => _socketResponse.stream;
-
-  void dispose() {
-    _socketResponse.close();
   }
 }
