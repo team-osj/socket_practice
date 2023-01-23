@@ -27,7 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
   StreamController<String> streamController = StreamController<String>();
 
   IO.Socket socket = IO.io(
-      '$url/application',
+      '$url/hi',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .enableAutoConnect()
@@ -35,10 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _connect() {
     socket.onConnect((data) => debugPrint('연결 성공'));
-    socket.on('test', (data) {
-      debugPrint('받은 값 : $data');
-      return streamController.add(data);
-    });
+    socket.on('test', (data) => streamController.sink.add(data));
     socket.onDisconnect((data) => debugPrint('끊김'));
     socket.connect();
   }
