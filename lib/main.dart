@@ -27,7 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
   StreamController<String> streamController = StreamController<String>();
 
   IO.Socket socket = IO.io(
-      '$url/hi',
+      '$url/application',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .enableAutoConnect()
